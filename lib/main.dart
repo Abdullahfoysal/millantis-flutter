@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:millantis/socketClient/indivisualPage.dart';
+import 'package:millantis/gameUI/gameUI.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: IndivisualPage(),
+      home: GameUI(),
     );
   }
 }
