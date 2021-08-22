@@ -101,6 +101,21 @@ class FaceOutLinePainter extends CustomPainter {
     );
 
     canvas.drawPath(mouth, paint);
+
+    Paint paint_0 = new Paint()
+      ..color = Color.fromARGB(255, 33, 150, 243)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    Path path_0 = Path();
+    path_0.moveTo(size.width * 0.3371429, size.height * 0.5160000);
+    path_0.lineTo(size.width * 0.3700000, size.height * 0.6400000);
+    path_0.lineTo(size.width * 0.4900000, size.height * 0.6140000);
+    path_0.lineTo(size.width * 0.4357143, size.height * 0.4920000);
+    path_0.lineTo(size.width * 0.3857143, size.height * 0.4440000);
+    path_0.lineTo(size.width * 0.3385714, size.height * 0.5160000);
+
+    canvas.drawPath(path_0, paint);
   }
 
   @override
