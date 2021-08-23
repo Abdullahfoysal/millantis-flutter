@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
@@ -30,14 +31,35 @@ class BodyWidget extends StatefulWidget {
 
 class _BodyWidgetState extends State<BodyWidget> {
   List<Offset> _points = <Offset>[];
-  List<List<int>> numbers = new List.generate(25, (i) => []);
+  List<List<int>> lines = new List.generate(25, (i) => []);
+  int circleNumber1 = 0;
 
-
-  void callBack(Offset point) {
-    print("method invoke from canvas custom paint");
-    print(point);
+  void selectCircle1CallBack(int circle1) {
     setState(() {
-      _points.add(point);
+      circleNumber1 = circle1;
+    });
+  }
+
+  void callBack(int circleNumber1, int circleNumber2) {
+    print("method invoke from canvas custom paint");
+    // print(point);
+    setState(() {
+      if (lines[circleNumber1].isEmpty)
+        lines[circleNumber1].add(circleNumber1);
+      else {
+        for (int i = 0; i < lines[circleNumber1].length; i++) {
+          int tempCircle = lines[circleNumber1][i];
+          if (tempCircle == circleNumber2) {
+            return;
+          }
+        }
+        lines[circleNumber1].add(circleNumber2);
+      }
+
+      //   _points.add(point);
+      //    if(lines[circleNumber].isEmpty)
+      //    lines[circleNumber].add(circleNumber);
+      //    else lines[ci]
     });
   }
 
@@ -52,7 +74,11 @@ class _BodyWidgetState extends State<BodyWidget> {
           child: CanvasTouchDetector(
             builder: (context) => (CustomPaint(
               painter: Signature(
-                  points: _points, onCallback: callBack, context: context),
+                  lines: lines,
+                  selectedCircle1: circleNumber1,
+                  onCallback: callBack,
+                  onselectCircle1CallBack: selectCircle1CallBack,
+                  context: context),
             )),
           ),
         ),
@@ -61,7 +87,7 @@ class _BodyWidgetState extends State<BodyWidget> {
         backgroundColor: Colors.pink,
         child: Icon(Icons.cleaning_services_rounded),
         onPressed: () {
-          _points.clear();
+          lines.clear();
         },
       ),
     );
@@ -69,14 +95,21 @@ class _BodyWidgetState extends State<BodyWidget> {
 }
 
 class Signature extends CustomPainter {
-  List<Offset> points;
+  List<List<int>> lines;
   final Function onCallback;
+  final Function onselectCircle1CallBack;
   final BuildContext context;
   int rowColum = 5;
   double circleRadius = 15.0;
   List<Offset> circlePoints = <Offset>[];
+  Map circleNumberToOffsetMap = new Map();
+  final selectedCircle1;
   Signature(
-      {required this.points, required this.onCallback, required this.context});
+      {required this.lines,
+      required this.selectedCircle1,
+      required this.onCallback,
+      required this.onselectCircle1CallBack,
+      required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -116,43 +149,70 @@ class Signature extends CustomPainter {
       double height = size.height / 3 + 50 * i;
       for (int j = 0; j < rowColum; j++) {
         double width = size.width / 3 + 50 * j;
-
-        circlePoints.add(Offset(width, height));
+        int circleNumber = (rowColum * i) + j;
+        circleNumberToOffsetMap[circleNumber] = Offset(width, height);
+        //circlePoints.add(Offset(width, height));
 
         myCanvas.drawCircle(
-            Offset(width, height), circleRadius, Paint()..color = Colors.pink,
-            onTapDown: (tapdetail) {
-          print("pink Circle touched ");
+          Offset(width, height),
+          circleRadius,
+          Paint()..color = Colors.pink,
+          onTapDown: (tapdetail) {
+            print("pink Circle touched ");
+          },
+          onForcePressEnd: (tapdetail) {
+            print('on force press end');
+          },
+          onPanStart: (tapdetail) {
+            print("on start");
+            int selectedCircle = getCenter(tapdetail.localPosition);
+            print(selectedCircle);
+          },
+          onPanUpdate: (tapdetail) {
+            print("on update");
+            int selectedCircle = getCenter(tapdetail.localPosition);
+            print(selectedCircle1);
+            print(selectedCircle);
 
-        }, onPanDown: (tapdetail) {
-          //  print("orange circle swiped");
-        },onPanUpdate: (tapdetail){
-          Offset circleCenter = getCenter(tapdetail.localPosition);
-          if (circleCenter != Offset.zero) onCallback(circleCenter);
-        },
+            if (selectedCircle != -1)
+              onCallback(selectedCircle1, selectedCircle);
+          },
+          onPanDown: (tapdetail) {
+            print("on panDown");
+            int selectedCircle = getCenter(tapdetail.localPosition);
+            print(selectedCircle);
+            onselectCircle1CallBack(selectedCircle);
+          },
         );
       }
     }
-    // print(circlePoints);
+    print(circleNumberToOffsetMap);
+    print(lines);
 
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i], points[i + 1], paint);
+    for (int i = 0; i < lines.length; i++) {
+      for (int j = 0; j < lines[i].length; j++) {
+        int circle2 = lines[i][j];
+        //  if (circleNumberToOffsetMap[i] != null &&
+        // circleNumberToOffsetMap[circle2] != null) {
+        canvas.drawLine(circleNumberToOffsetMap[i],
+            circleNumberToOffsetMap[circle2], paint);
+        //}
       }
     }
   }
 
   @override
   bool shouldRepaint(Signature oldDelegate) {
-    return oldDelegate.points != points;
+    return oldDelegate.lines != lines;
   }
 
-  Offset getCenter(Offset local) {
-    for (int i = 0; i < circlePoints.length; i++) {
+  int getCenter(Offset local) {
+    for (int i = 0; i < circleNumberToOffsetMap.length; i++) {
       double x1 = local.dx;
-      double x2 = circlePoints[i].dx;
       double y1 = local.dy;
-      double y2 = circlePoints[i].dy;
+
+      double x2 = circleNumberToOffsetMap[i].dx;
+      double y2 = circleNumberToOffsetMap[i].dy;
 
       x1 = (x1 - x2);
       x1 = x1 * x1;
@@ -161,10 +221,10 @@ class Signature extends CustomPainter {
       double radius = sqrt(x1 + y1);
 
       if (radius <= circleRadius) {
-        return circlePoints[i];
+        return i;
       }
     }
-    return Offset.zero;
+    return -1;
   }
 }
 
