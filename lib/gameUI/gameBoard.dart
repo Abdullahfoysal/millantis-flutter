@@ -55,11 +55,6 @@ class _BodyWidgetState extends State<BodyWidget> {
         }
         lines[circleNumber1].add(circleNumber2);
       }
-
-      //   _points.add(point);
-      //    if(lines[circleNumber].isEmpty)
-      //    lines[circleNumber].add(circleNumber);
-      //    else lines[ci]
     });
   }
 
@@ -87,7 +82,9 @@ class _BodyWidgetState extends State<BodyWidget> {
         backgroundColor: Colors.pink,
         child: Icon(Icons.cleaning_services_rounded),
         onPressed: () {
-          lines.clear();
+          lines.forEach((element) {
+            element.clear();
+          });
         },
       ),
     );
@@ -151,18 +148,11 @@ class Signature extends CustomPainter {
         double width = size.width / 3 + 50 * j;
         int circleNumber = (rowColum * i) + j;
         circleNumberToOffsetMap[circleNumber] = Offset(width, height);
-        //circlePoints.add(Offset(width, height));
 
         myCanvas.drawCircle(
           Offset(width, height),
           circleRadius,
           Paint()..color = Colors.pink,
-          onTapDown: (tapdetail) {
-            print("pink Circle touched ");
-          },
-          onForcePressEnd: (tapdetail) {
-            print('on force press end');
-          },
           onPanStart: (tapdetail) {
             print("on start");
             int selectedCircle = getCenter(tapdetail.localPosition);
@@ -174,8 +164,10 @@ class Signature extends CustomPainter {
             print(selectedCircle1);
             print(selectedCircle);
 
-            if (selectedCircle != -1)
+            if (isValidLine(selectedCircle)) {
               onCallback(selectedCircle1, selectedCircle);
+              onCallback(selectedCircle, selectedCircle1);
+            }
           },
           onPanDown: (tapdetail) {
             print("on panDown");
@@ -186,17 +178,16 @@ class Signature extends CustomPainter {
         );
       }
     }
-    print(circleNumberToOffsetMap);
+    // print(circleNumberToOffsetMap);
     print(lines);
 
     for (int i = 0; i < lines.length; i++) {
+      int circle1 = i;
       for (int j = 0; j < lines[i].length; j++) {
         int circle2 = lines[i][j];
-        //  if (circleNumberToOffsetMap[i] != null &&
-        // circleNumberToOffsetMap[circle2] != null) {
-        canvas.drawLine(circleNumberToOffsetMap[i],
+
+        canvas.drawLine(circleNumberToOffsetMap[circle1],
             circleNumberToOffsetMap[circle2], paint);
-        //}
       }
     }
   }
@@ -226,31 +217,22 @@ class Signature extends CustomPainter {
     }
     return -1;
   }
-}
 
-/*
-class GameBoard extends StatefulWidget {
-  const GameBoard({Key? key}) : super(key: key);
+  bool isValidLine(int n) {
+    int left = n - 1;
+    int right = n + 1;
+    int mod = n % rowColum;
+    int lineNumber = ((n / rowColum).toInt());
 
-  @override
-  _GameBoardState createState() => _GameBoardState();
-}
+    int up = ((lineNumber - 1) * rowColum) + mod;
+    int down = ((lineNumber + 1) * rowColum) + mod;
 
-class _GameBoardState extends State<GameBoard> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.green,
-      body: Center(
-        child: Container(
-          width: 400,
-          height: 400,
-          color: Colors.yellow,
-          child: BodyWidget(),
-        ),
-      ),
-    );
+    if (left == selectedCircle1 ||
+        right == selectedCircle1 ||
+        up == selectedCircle1 ||
+        down == selectedCircle1) {
+      return true;
+    }
+    return false;
   }
 }
-
- */
