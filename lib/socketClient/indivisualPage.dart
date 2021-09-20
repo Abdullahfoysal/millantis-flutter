@@ -18,11 +18,11 @@ class _IndivisualPageState extends State<IndivisualPage> {
   String message = "";
   String responseMessage = "";
   TextEditingController textController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     print('init state');
-
     connect();
   }
 
@@ -65,7 +65,7 @@ class _IndivisualPageState extends State<IndivisualPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('millantis socket.io'),
+        title: Text('Millantis socket.io'),
       ),
       body: Center(
         child: Column(
