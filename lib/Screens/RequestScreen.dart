@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:millantis/Models/EmployeeModel.dart';
+import 'package:millantis/coreComponent/HttpService.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({Key? key}) : super(key: key);
@@ -17,7 +19,11 @@ class _RequestScreenState extends State<RequestScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(onPressed: () {}, child: Text("Get Request")),
+              ElevatedButton(
+                  onPressed: () async {
+                    _getMethod();
+                  },
+                  child: Text("Get Request")),
               SizedBox(
                 height: 10,
               ),
@@ -35,5 +41,13 @@ class _RequestScreenState extends State<RequestScreen> {
         ),
       ),
     );
+  }
+
+  Future _getMethod() async {
+    print("called get");
+    String api = "";
+    var apiResponse = await HttpService().getAsync(api);
+    EmployeeModel employeeData = EmployeeModel.fromJson(apiResponse);
+    print(employeeData);
   }
 }

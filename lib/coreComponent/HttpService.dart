@@ -8,7 +8,8 @@ import '../environment.dart';
 class HttpService {
   Future<dynamic> getAsync(String api) async {
     var response = await http.Client()
-        .get(Uri.parse(_getUrl(api)), headers: await _getHeaders());
+        .get(Uri.parse(_getUrl(api)), headers: await _getHeaders())
+        .catchError((e) => print(e.toString()));
     return _handleResponse(response);
   }
 
@@ -51,10 +52,7 @@ class HttpService {
     }
 
     final parsed = json.decode(response.body);
-    if (parsed['isSuccess']) {
-      return parsed['data'];
-    }
-    throw Exception(parsed['errors']);
+    return parsed;
   }
   // endregion
 }

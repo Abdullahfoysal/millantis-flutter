@@ -14,8 +14,8 @@ class GameBoard extends StatelessWidget {
       body: SafeArea(
         child: Container(
           color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 80),
-          child: BodyWidget(),
+          //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+          child: Center(child: BodyWidget()),
         ),
       ),
     );
@@ -156,13 +156,13 @@ class Signature extends CustomPainter {
           onPanStart: (tapdetail) {
             print("on start");
             int selectedCircle = getCenter(tapdetail.localPosition);
-            print(selectedCircle);
+            //print(selectedCircle);
           },
           onPanUpdate: (tapdetail) {
             print("on update");
             int selectedCircle = getCenter(tapdetail.localPosition);
-            print(selectedCircle1);
-            print(selectedCircle);
+            // print(selectedCircle1);
+            //  print(selectedCircle);
 
             if (isValidLine(selectedCircle)) {
               onCallback(selectedCircle1, selectedCircle);
@@ -172,14 +172,14 @@ class Signature extends CustomPainter {
           onPanDown: (tapdetail) {
             print("on panDown");
             int selectedCircle = getCenter(tapdetail.localPosition);
-            print(selectedCircle);
+            // print(selectedCircle);
             onselectCircle1CallBack(selectedCircle);
           },
         );
       }
     }
     // print(circleNumberToOffsetMap);
-    print(lines);
+    // print(lines);
 
     for (int i = 0; i < lines.length; i++) {
       int circle1 = i;
