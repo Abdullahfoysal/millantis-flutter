@@ -32,10 +32,15 @@ dependencies:
   socket_io_client: ^1.0.1
   touchable: ^1.0.0
   animated_background: ^2.0.0 #background animation TODO
+  http: ^0.13.3
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner:
+
+  json_serializable:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

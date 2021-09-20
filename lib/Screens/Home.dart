@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:millantis/SharedWidget/HelperWidgets.dart';
+import 'package:millantis/gameUI/gameBoard.dart';
+
+import 'RequestScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,34 +13,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+  void onClickedBottomNavBar(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter CRUD APPLICATION"),
+        title: Text("Flutter Game CRUD APPLICATION"),
       ),
-      body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(onPressed: () {}, child: Text("Get Request")),
-              SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(onPressed: () {}, child: Text("Post Request")),
-              SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(onPressed: () {}, child: Text("Put Request")),
-              SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(onPressed: () {}, child: Text("Delete Request")),
-            ],
-          ),
-        ),
-      ),
+      body: _body(),
+      bottomNavigationBar: HelperWidgets.applicationBottomNavBar(
+          _selectedIndex, onClickedBottomNavBar),
     );
+  }
+
+  Widget _body() {
+    switch (_selectedIndex) {
+      case 0:
+        return RequestScreen();
+      default:
+        return GameBoard();
+    }
   }
 }
