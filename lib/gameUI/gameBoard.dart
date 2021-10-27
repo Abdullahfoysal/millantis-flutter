@@ -30,7 +30,6 @@ class BodyWidget extends StatefulWidget {
 }
 
 class _BodyWidgetState extends State<BodyWidget> {
-  List<Offset> _points = <Offset>[];
   List<List<int>> lines = new List.generate(25, (i) => []);
   int circleNumber1 = 0;
 
@@ -40,7 +39,7 @@ class _BodyWidgetState extends State<BodyWidget> {
     });
   }
 
-  void callBack(int circleNumber1, int circleNumber2) {
+  void lineDrawCallBack(int circleNumber1, int circleNumber2) {
     print("method invoke from canvas custom paint");
     // print(point);
     setState(() {
@@ -71,7 +70,7 @@ class _BodyWidgetState extends State<BodyWidget> {
               painter: Signature(
                   lines: lines,
                   selectedCircle1: circleNumber1,
-                  onCallback: callBack,
+                  onCallback: lineDrawCallBack,
                   onselectCircle1CallBack: selectCircle1CallBack,
                   context: context),
             )),
@@ -96,9 +95,31 @@ class Signature extends CustomPainter {
   final Function onCallback;
   final Function onselectCircle1CallBack;
   final BuildContext context;
-  int rowColum = 5;
+  int rowColumnGrid = 5;
   double circleRadius = 15.0;
   List<Offset> circlePoints = <Offset>[];
+  List<Paint> lineColors = [
+    new Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0,
+    new Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0,
+    new Paint()
+      ..color = Colors.green
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0,
+    new Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0
+  ];
   Map circleNumberToOffsetMap = new Map();
   final selectedCircle1;
   Signature(
@@ -136,19 +157,14 @@ class Signature extends CustomPainter {
 
     ///touch event test end
 
-    Paint paint = new Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-
-    for (int i = 0; i < rowColum; i++) {
+    for (int i = 0; i < rowColumnGrid; i++) {
       double height = size.height / 3 + 50 * i;
-      for (int j = 0; j < rowColum; j++) {
+      for (int j = 0; j < rowColumnGrid; j++) {
         double width = size.width / 3 + 50 * j;
-        int circleNumber = (rowColum * i) + j;
+        int circleNumber = (rowColumnGrid * i) + j;
         circleNumberToOffsetMap[circleNumber] = Offset(width, height);
 
+        //drawCircle
         myCanvas.drawCircle(
           Offset(width, height),
           circleRadius,
@@ -176,10 +192,14 @@ class Signature extends CustomPainter {
             onselectCircle1CallBack(selectedCircle);
           },
         );
+
+        //drawCircle end
       }
     }
     // print(circleNumberToOffsetMap);
     // print(lines);
+
+    //draw lines
 
     for (int i = 0; i < lines.length; i++) {
       int circle1 = i;
@@ -187,9 +207,11 @@ class Signature extends CustomPainter {
         int circle2 = lines[i][j];
 
         canvas.drawLine(circleNumberToOffsetMap[circle1],
-            circleNumberToOffsetMap[circle2], paint);
+            circleNumberToOffsetMap[circle2], lineColors[i % 4]);
       }
     }
+
+    //draw lines
   }
 
   @override
@@ -221,11 +243,11 @@ class Signature extends CustomPainter {
   bool isValidLine(int n) {
     int left = n - 1;
     int right = n + 1;
-    int mod = n % rowColum;
-    int lineNumber = ((n / rowColum).toInt());
+    int mod = n % rowColumnGrid;
+    int lineNumber = ((n / rowColumnGrid).toInt());
 
-    int up = ((lineNumber - 1) * rowColum) + mod;
-    int down = ((lineNumber + 1) * rowColum) + mod;
+    int up = ((lineNumber - 1) * rowColumnGrid) + mod;
+    int down = ((lineNumber + 1) * rowColumnGrid) + mod;
 
     if (left == selectedCircle1 ||
         right == selectedCircle1 ||
