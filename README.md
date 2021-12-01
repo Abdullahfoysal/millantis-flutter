@@ -1,6 +1,6 @@
 # millantis
 
-A new Flutter game .
+A new Flutter realtime Multiplayer game .
 
 ## Getting Started
 
@@ -14,6 +14,11 @@ A new Flutter game .
 
 
 ##Socket io usage for game room.
+
+
+
+
+
 <img src="https://github.com/Abdullahfoysal/millantis-flutter/blob/63bde409d35ef5fd8c02f728ffb63758a788be3e/srs3.png"/>
 
 
