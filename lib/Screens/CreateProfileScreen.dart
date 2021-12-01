@@ -5,28 +5,26 @@ import 'package:millantis/Models/UserTable.dart';
 import 'package:millantis/SharedWidget/ButtonLoader.dart';
 import 'package:millantis/coreComponent/HttpService.dart';
 
-class UpdateProfileScreen extends StatefulWidget {
-  final UserTable user;
+class CreateProfileScreen extends StatefulWidget {
   final Function() updateListMethod;
-
-  UpdateProfileScreen(this.user, this.updateListMethod);
+  CreateProfileScreen(this.updateListMethod);
 
   @override
-  _UpdateProfileScreenState createState() => _UpdateProfileScreenState(user);
+  _CreateProfileScreenState createState() => _CreateProfileScreenState();
 }
 
-class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+class _CreateProfileScreenState extends State<CreateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final UserTable user;
-  bool isLoading = false;
 
-  _UpdateProfileScreenState(this.user);
+  UserTable user = UserTable();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Update User Profile"),
+        title: Text("Create User Profile"),
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -50,7 +48,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                 ),
                 TextFormField(
-                  initialValue: user.name,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
@@ -58,14 +55,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelText: 'Name *',
                   ),
                   validator: (value) {
-                    // validation logic
+                    return value == null ? "Fill the form" : null;
                   },
                   onChanged: (val) {
                     user.name = val.trim();
                   },
                 ),
                 TextFormField(
-                  initialValue: user.address,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.location_pin),
@@ -73,14 +69,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelText: 'Address *',
                   ),
                   validator: (value) {
-                    // validation logic
+                    return value == null ? "Fill the form" : null;
                   },
                   onChanged: (val) {
                     user.address = val.trim();
                   },
                 ),
                 TextFormField(
-                  initialValue: user.rank,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.score),
@@ -88,14 +83,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelText: 'Rank *',
                   ),
                   validator: (value) {
-                    // validation logic
+                    return value == null ? "Fill the form" : null;
                   },
                   onChanged: (val) {
                     user.rank = val.trim();
                   },
                 ),
                 TextFormField(
-                  initialValue: user.playTime,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.run_circle),
@@ -103,14 +97,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelText: 'Play Time *',
                   ),
                   validator: (value) {
-                    // validation logic
+                    return value == null ? "Fill the form" : null;
                   },
                   onChanged: (val) {
                     user.playTime = val.trim();
                   },
                 ),
                 TextFormField(
-                  initialValue: user.type,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.verified),
@@ -118,14 +111,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelText: 'Type *',
                   ),
                   validator: (value) {
-                    // validation logic
+                    return value == null ? "Fill the form" : null;
                   },
                   onChanged: (val) {
                     user.type = val.trim();
                   },
                 ),
                 TextFormField(
-                  initialValue: user.bestScore,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
@@ -133,7 +125,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelText: 'Score *',
                   ),
                   validator: (value) {
-                    // validation logic
+                    return value == null ? "Fill the form" : null;
                   },
                   onChanged: (val) {
                     user.bestScore = val.trim();
@@ -142,16 +134,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                ButtonLoader.button("Update", isLoading, _postUpdateMethod),
-                /* ElevatedButton(
-                  child: Text('Update'),
-                  onPressed: ()async {
+                ButtonLoader.button("Create", isLoading, _postMethod),
+                /*ElevatedButton(
+                  child: Text('Create'),
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        isLoading =true;
-                      });
-                      _postUpdateMethod();
-
+                      await _postMethod();
                     }
                   },
                 ),*/
@@ -163,13 +151,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  void _postUpdateMethod() async {
+  void _postMethod() async {
     setState(() {
       isLoading = true;
     });
-    String api = "people/update";
+    String api = "people/create";
     Map<String, dynamic> body = user.toJson();
-
     bool response = await HttpService().postAsync(api, body).then((value) {
       print(value);
       return value;
@@ -179,15 +166,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         isLoading = false;
       });
     });
+
     setState(() {
       isLoading = false;
     });
+
     if (response) {
       ButtonLoader.alertDialogSuccess(context);
     } else {
       ButtonLoader.alertDialogFail(context);
     }
-
     widget.updateListMethod();
 
     print(response);

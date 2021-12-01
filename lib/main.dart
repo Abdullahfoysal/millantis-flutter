@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:millantis/Screens/UserList.dart';
+import 'package:millantis/Screens/Home.dart';
 
 void main() {
   print(DateTime.now());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: UserList(),
+      home: HomeScreen(),
     );
   }
 }

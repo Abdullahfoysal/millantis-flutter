@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:millantis/Models/EmployeeModel.dart';
+import 'package:millantis/Models/UserTable.dart';
+import 'package:millantis/Screens/CreateProfileScreen.dart';
 import 'package:millantis/Screens/ProfileScreen.dart';
+import 'package:millantis/SharedWidget/ButtonLoader.dart';
 import 'package:millantis/coreComponent/HttpService.dart';
 
 class UserList extends StatefulWidget {
@@ -12,7 +14,11 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  List<EmployeeModel> employeeList = [];
+  List<UserTable> userList = [];
+
+  void updateListMethod() {
+    _getMethod();
+  }
 
   @override
   void initState() {
@@ -21,14 +27,37 @@ class _UserListState extends State<UserList> {
   }
 
   @override
+  void didUpdateWidget(covariant UserList oldWidget) {
+    _getMethod();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("All User List"),
+        backgroundColor: Colors.white,
+        title: Text(
+          "All User List",
+          style: TextStyle(color: Colors.black26),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _getMethod();
+              },
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.blue,
+              ))
+        ],
       ),
       body: getUserListWidget,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => CreateProfileScreen(updateListMethod)));
+        },
         child: Icon(Icons.add),
       ),
     );
@@ -38,20 +67,23 @@ class _UserListState extends State<UserList> {
     return SingleChildScrollView(
       child: Wrap(
         children: [
-          for (int i = 0; i < 5; i++) getProfileScreen(),
+          for (int i = 0; i < userList.length; i++)
+            getProfileScreen(userList[i]),
         ],
       ),
     );
   }
 
-  Widget getProfileScreen() {
+  Widget getProfileScreen(UserTable user) {
     return Stack(
       children: [
-        ProfileScreen(),
+        ProfileScreen(user, updateListMethod),
         Positioned(
           right: 0,
           child: IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await _deleteMethod(user.id!);
+            },
             icon: Icon(Icons.remove_circle_outline),
             color: Colors.red,
           ),
@@ -60,36 +92,43 @@ class _UserListState extends State<UserList> {
     );
   }
 
-  Future _getMethod() async {
-    print("called get");
-    String api = "people";
-
-    employeeList = await HttpService().getAsync(api).then((value) {
-      return EmployeeModel().fromJsonList(value);
-    }).catchError((err) {
-      print(err);
-    });
-
-    employeeList.forEach((element) {
-      print(element.name);
-    });
-  }
-
-  Future _postMethod() async {
-    String api = "people/create";
-    Map<String, dynamic> body = {
-      "name": "Hasan",
-      "age": 20,
-      "school": "Sristy school",
-      "college": "BN college",
-    };
-    var response = await HttpService().postAsync(api, body).then((value) {
+  Future _deleteMethod(int id) async {
+    String api = "people/user";
+    bool response =
+        await HttpService().deleteAsync(api, id.toString()).then((value) {
       print(value);
       return value;
     }).catchError((err) {
       print(err);
     });
 
+    if (response) {
+      ButtonLoader.alertDialogSuccess(context);
+    } else {
+      ButtonLoader.alertDialogFail(context);
+    }
+    if (response) {
+      setState(() {
+        userList.removeWhere((element) => element.id == id);
+      });
+    }
+
     print(response);
+  }
+
+  Future _getMethod() async {
+    print("called get");
+    String api = "people";
+
+    List<UserTable> userList2 = [];
+    userList2 = await HttpService().getAsync(api).then((value) {
+      return UserTable().fromJsonList(value);
+    }).catchError((err) {
+      print(err);
+    });
+
+    setState(() {
+      userList = userList2;
+    });
   }
 }

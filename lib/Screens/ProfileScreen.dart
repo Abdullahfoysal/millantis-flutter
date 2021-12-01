@@ -1,21 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:millantis/Constanst/AppImage.dart';
+import 'package:millantis/Models/UserTable.dart';
 import 'package:millantis/Screens/UpdateProfileScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final UserTable user;
+  final Function() updateListMethod;
+
+  ProfileScreen(this.user, this.updateListMethod);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => UpdateProfileScreen()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => UpdateProfileScreen(user, updateListMethod)));
       },
       child: Card(
         child: Container(
-          width: 200,
+          width: 250,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -32,12 +36,13 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              infoCard("Name: ", "Foysal Ahmed"),
-              infoCard("Address: ", "Dhaka,Bangladesh"),
-              infoCard("Rank: ", "SuperCell"),
-              infoCard("Play Time: ", "54:30"),
-              infoCard("Type: ", "Noob"),
-              infoCard("Best Score: ", "100"),
+              infoCard("ID: ", user.id.toString()),
+              infoCard("Name: ", user.name.toString()),
+              infoCard("Address: ", user.address.toString()),
+              infoCard("Rank: ", user.rank.toString()),
+              infoCard("Play Time: ", user.playTime.toString()),
+              infoCard("Type: ", user.type.toString()),
+              infoCard("Best Score: ", user.bestScore.toString()),
             ],
           ),
         ),

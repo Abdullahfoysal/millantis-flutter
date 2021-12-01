@@ -19,8 +19,8 @@ class HelperWidgets {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.playlist_add_check),
-          label: 'Request',
+          icon: Icon(Icons.supervised_user_circle),
+          label: 'Users',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.videogame_asset),

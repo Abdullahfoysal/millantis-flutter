@@ -8,6 +8,7 @@ part of 'UserTable.dart';
 
 UserTable _$UserTableFromJson(Map<String, dynamic> json) {
   return UserTable()
+    ..id = json['id'] as int?
     ..name = json['name'] as String?
     ..address = json['address'] as String?
     ..rank = json['rank'] as String?
@@ -17,6 +18,7 @@ UserTable _$UserTableFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$UserTableToJson(UserTable instance) => <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'address': instance.address,
       'rank': instance.rank,

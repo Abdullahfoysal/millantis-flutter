@@ -47,9 +47,10 @@ class HttpService {
 
   Future<Map<String, String>> _getHeaders2() async {
     return {
+      "Access-Control_Allow_Origin": "*",
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Access-Control_Allow_Origin": "*"
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
     };
   }
 
