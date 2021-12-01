@@ -8,15 +8,14 @@ import '../environment.dart';
 class HttpService {
   Future<dynamic> getAsync(String api) async {
     var response = await http.Client()
-        .get(Uri.parse(_getUrl(api)), headers: await _getHeaders())
-        .catchError((e) => print(e.toString()));
+        .get(Uri.parse(_getUrl(api)), headers: await _getHeaders2());
     return _handleResponse(response);
   }
 
   Future<dynamic> postAsync(String api, Map<String, dynamic> body) async {
     var bodyJson = json.encode(body);
     var response = await http.Client().post(Uri.parse(_getUrl(api)),
-        body: bodyJson, headers: await _getHeaders());
+        body: bodyJson, headers: await _getHeaders2());
     return _handleResponse(response);
   }
 
@@ -30,7 +29,7 @@ class HttpService {
   Future<dynamic> deleteAsync(String api, String id) async {
     var apiUrl = Uri.parse("${_getUrl(api)}/$id");
     var response =
-        await http.Client().delete(apiUrl, headers: await _getHeaders());
+        await http.Client().delete(apiUrl, headers: await _getHeaders2());
     return _handleResponse(response);
   }
 
@@ -46,12 +45,21 @@ class HttpService {
     };
   }
 
+  Future<Map<String, String>> _getHeaders2() async {
+    return {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Access-Control_Allow_Origin": "*"
+    };
+  }
+
   dynamic _handleResponse(http.Response response) {
     if (response.statusCode != 200) {
       throw response.body;
     }
 
     final parsed = json.decode(response.body);
+    // final parsed = response.body;
     return parsed;
   }
   // endregion

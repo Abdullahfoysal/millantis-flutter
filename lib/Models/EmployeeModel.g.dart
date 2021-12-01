@@ -8,16 +8,16 @@ part of 'EmployeeModel.dart';
 
 EmployeeModel _$EmployeeModelFromJson(Map<String, dynamic> json) {
   return EmployeeModel()
-    ..EmpID = json['EmpID'] as int?
-    ..Name = json['Name'] as String?
-    ..EmpCode = json['EmpCode'] as String?
-    ..Salary = json['Salary'] as int?;
+    ..name = json['name'] as String?
+    ..age = json['age'] as int?
+    ..school = json['school'] as String?
+    ..college = json['college'] as String?;
 }
 
 Map<String, dynamic> _$EmployeeModelToJson(EmployeeModel instance) =>
     <String, dynamic>{
-      'EmpID': instance.EmpID,
-      'Name': instance.Name,
-      'EmpCode': instance.EmpCode,
-      'Salary': instance.Salary,
+      'name': instance.name,
+      'age': instance.age,
+      'school': instance.school,
+      'college': instance.college,
     };

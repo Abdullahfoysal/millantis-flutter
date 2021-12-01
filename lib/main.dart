@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'Screens/Home.dart';
+import 'package:millantis/Screens/UserList.dart';
 
 void main() {
+  print(DateTime.now());
   runApp(MyApp());
 }
 
@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: UserList(),
     );
   }
 }

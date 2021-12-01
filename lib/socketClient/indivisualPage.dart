@@ -14,7 +14,7 @@ class _IndivisualPageState extends State<IndivisualPage> {
   int userId = 1;
   String port = "3000";
   String ipAddress = "https://calm-chamber-94669.herokuapp.com";
-  String ipAdreessLocal = "http://192.168.0.103:3000";
+  String ipAdreessLocal = "http://localhost:3000";
   String message = "";
   String responseMessage = "";
   TextEditingController textController = TextEditingController();
@@ -22,7 +22,7 @@ class _IndivisualPageState extends State<IndivisualPage> {
   @override
   void initState() {
     super.initState();
-    print('init state');
+
     connect();
   }
 
@@ -36,22 +36,26 @@ class _IndivisualPageState extends State<IndivisualPage> {
       print('connect');
       print(res);
     });
-    socket.onDisconnect((_) => print('disconnect from server on client '));
+    socket.onDisconnect((handler) {
+      print('disconnect from server on client ');
+    });
     socket.onConnect((data) {
       print("Connected socket to server");
 
       socket.on("message", (data) {
-        print(data);
         setState(() {
-          responseMessage = data;
+          responseMessage += data + "\n";
         });
       });
-      socket.on("output-messages", (data) {
-        // print(data);
+      socket.on("initData", (data) {
+        print(data);
 
-        // setState(() {
-        //   message = data["msg"];
-        // });
+        setState(() {
+          data.forEach((m) {
+            print(m['msg']);
+            responseMessage += m['msg'] + "\n";
+          });
+        });
       });
     });
     print(socket.connected);
@@ -74,7 +78,7 @@ class _IndivisualPageState extends State<IndivisualPage> {
               controller: textController,
             ),
             Container(
-              child: Text(responseMessage),
+              child: Expanded(child: Text(responseMessage)),
             ),
           ],
         ),
